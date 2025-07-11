@@ -21,6 +21,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: ✅ Garantir permissão de execução do Maven Wrapper
+      run: chmod +x mvnw
+
     - name: 📦 Instalar dependências e compilar
       run: ./mvnw clean install -DskipTests=true
 
