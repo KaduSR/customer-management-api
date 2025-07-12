@@ -25,21 +25,18 @@ public class ClienteService {
     }
 
     @Transactional
-    public ClienteResponse createCliente(ClienteRequest request) {
-        Plano plano = planoRepository.findById(request.planoId())
-                .orElseThrow(() -> new ResourceNotFoundException("Plano não encontrado"));
+    public ClienteResponse createCliente(ClienteRequest clienteRequest) {
+        if (repository.existsByCpf(clienteRequest.cpf())) {
+            throw new ResourceNotFoundException("Já existe um cliente com este CPF");
+        }
+        if (repository.existsByEmail(clienteRequest.email())) {
+            throw new ResourceNotFoundException("Já existe um cliente com este e-mail");
+        }
 
-        Cliente cliente = Cliente.builder()
-                .nome(request.nome())
-                .cpf(request.cpf())
-                .email(request.email())
-                .telefone(request.telefone())
-                .endereco(request.endereco())
-                .plano(plano)
-                .build();
-
-        Cliente saved = clienteRepository.save(cliente);
-        return toResponse(saved);
+        Cliente cliente = new Cliente(null, clienteRequest.nome(), clienteRequest.email(), clienteRequest.telefone(),
+                clienteRequest.endereco(), clienteRequest.cpf());
+        Cliente savedCliente = repository.save(cliente);
+        return toResponse(savedCliente);
     }
 
     public List<ClienteResponse> getAllClientes() {

@@ -54,7 +54,16 @@ public class AuthService {
         Date now = new Date();
         Date validity = new Date(now.getTime() + jwtExpiration);
 
-        return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(validity).signWith(SignatureAlgorithm.HS256, jwtSecret).compact();
+        return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, jwtSecret).compact();
+    }
+
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
     }
 
 }
