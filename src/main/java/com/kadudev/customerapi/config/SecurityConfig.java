@@ -1,7 +1,9 @@
 package com.kadudev.customerapi.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,6 +21,9 @@ import com.kadudev.customerapi.service.UserDetailsServiceImpl;
 public class SecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    @Lazy
     private final AuthService authService;
 
     public SecurityConfig(UserDetailsServiceImpl userDetailsService, AuthService authService) {

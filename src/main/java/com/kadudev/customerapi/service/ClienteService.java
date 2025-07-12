@@ -23,7 +23,6 @@ public class ClienteService {
 
     @Transactional
     public ClienteResponse createCliente(ClienteRequest clienteRequest) {
-        // Verifica se já existe um cliente com o mesmo CPF ou e-mail
         if (repository.existsByCpf(clienteRequest.cpf())) {
             throw new ResourceNotFoundException("Já existe um cliente com este CPF");
         }
@@ -31,9 +30,8 @@ public class ClienteService {
             throw new ResourceNotFoundException("Já existe um cliente com este e-mail");
         }
 
-        // Cria um novo cliente
         Cliente cliente = new Cliente(null, clienteRequest.nome(), clienteRequest.cpf(), clienteRequest.email(),
-                clienteRequest.telefone(), clienteRequest.endereco());
+                clienteRequest.telefone(), clienteRequest.endereco(), null);
         Cliente savedCliente = repository.save(cliente);
         return toResponse(savedCliente);
     }
