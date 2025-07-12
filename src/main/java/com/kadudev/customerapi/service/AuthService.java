@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.kadudev.customerapi.dto.AuthRequest;
+import com.kadudev.customerapi.dto.RegisterRequest;
 import com.kadudev.customerapi.model.User;
 import com.kadudev.customerapi.repository.UserRepository;
 
@@ -64,6 +66,19 @@ public class AuthService {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+    }
+
+    public boolean validateToken(String jwt, String username) {
+        throw new UnsupportedOperationException("Unimplemented method 'validateToken'");
+    }
+
+    public Object register(RegisterRequest request) {
+       
+        throw new UnsupportedOperationException("Unimplemented method 'register'");
+    }
+
+    public Object authenticate(AuthRequest request) {
+        throw new UnsupportedOperationException("Unimplemented method 'authenticate'");
     }
 
 }

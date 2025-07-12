@@ -25,15 +25,17 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @Operation(summary = "Registra um novo usuário", description = "Cria um novo usuário com os dados fornecidos e retorna um token JWT")
+    @Operation(summary = "Registra um novo usuário", description = "Cria um novo usuário com nome de usuário e senha")
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
+        authService.register(request.username(), request.password());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @Operation(summary = "Autentica um usuário", description = "Autentica um usuário com as credenciais fornecidas e retorna um token JWT")
+    @Operation(summary = "Autentica um usuário", description = "Autentica um usuário e retorna um token JWT")
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResponse> authenticate(@Valid @RequestBody AuthRequest request) {
-        return ResponseEntity.ok(authService.authenticate(request));
+        String token = authService.login(request.username(), request.password());
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }

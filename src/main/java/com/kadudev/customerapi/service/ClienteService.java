@@ -1,6 +1,7 @@
 package com.kadudev.customerapi.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,23 +10,20 @@ import com.kadudev.customerapi.dto.ClienteRequest;
 import com.kadudev.customerapi.dto.ClienteResponse;
 import com.kadudev.customerapi.exception.ResourceNotFoundException;
 import com.kadudev.customerapi.model.Cliente;
-import com.kadudev.customerapi.model.Plano;
 import com.kadudev.customerapi.repository.ClienteRepository;
-import com.kadudev.customerapi.repository.PlanoRepository;
 
 @Service
 public class ClienteService {
 
-    private final ClienteRepository clienteRepository;
-    private final PlanoRepository planoRepository;
+    private final ClienteRepository repository;
 
-    public ClienteService(ClienteRepository clienteRepository, PlanoRepository planoRepository) {
-        this.clienteRepository = clienteRepository;
-        this.planoRepository = planoRepository;
+    public ClienteService(ClienteRepository repository) {
+        this.repository = repository;
     }
 
     @Transactional
     public ClienteResponse createCliente(ClienteRequest clienteRequest) {
+        // Verifica se já existe um cliente com o mesmo CPF ou e-mail
         if (repository.existsByCpf(clienteRequest.cpf())) {
             throw new ResourceNotFoundException("Já existe um cliente com este CPF");
         }
@@ -33,60 +31,51 @@ public class ClienteService {
             throw new ResourceNotFoundException("Já existe um cliente com este e-mail");
         }
 
-        Cliente cliente = new Cliente(null, clienteRequest.nome(), clienteRequest.email(), clienteRequest.telefone(),
-                clienteRequest.endereco(), clienteRequest.cpf());
+        // Cria um novo cliente
+        Cliente cliente = new Cliente(null, clienteRequest.nome(), clienteRequest.cpf(), clienteRequest.email(),
+                clienteRequest.telefone(), clienteRequest.endereco());
         Cliente savedCliente = repository.save(cliente);
         return toResponse(savedCliente);
     }
 
     public List<ClienteResponse> getAllClientes() {
-        return clienteRepository.findAll().stream()
+        return repository.findAll().stream()
                 .map(this::toResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public ClienteResponse getClienteById(Long id) {
-        Cliente cliente = clienteRepository.findById(id)
+        Cliente cliente = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
         return toResponse(cliente);
     }
 
     @Transactional
-    public ClienteResponse updateCliente(Long id, ClienteRequest request) {
-        Cliente cliente = clienteRepository.findById(id)
+    public ClienteResponse updateCliente(Long id, ClienteRequest clienteRequest) {
+        Cliente cliente = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
-        Plano plano = planoRepository.findById(request.planoId())
-                .orElseThrow(() -> new ResourceNotFoundException("Plano não encontrado"));
+        // Atualiza os dados do cliente
+        cliente.setNome(clienteRequest.nome());
+        cliente.setCpf(clienteRequest.cpf());
+        cliente.setEmail(clienteRequest.email());
+        cliente.setTelefone(clienteRequest.telefone());
+        cliente.setEndereco(clienteRequest.endereco());
 
-        cliente.setNome(request.nome());
-        cliente.setCpf(request.cpf());
-        cliente.setEmail(request.email());
-        cliente.setTelefone(request.telefone());
-        cliente.setEndereco(request.endereco());
-        cliente.setPlano(plano);
-
-        Cliente updated = clienteRepository.save(cliente);
-        return toResponse(updated);
+        repository.save(cliente);
+        return toResponse(cliente);
     }
 
+    @Transactional
     public void deleteCliente(Long id) {
-        if (!clienteRepository.existsById(id)) {
+        if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Cliente não encontrado");
         }
-        clienteRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
     private ClienteResponse toResponse(Cliente cliente) {
-        return new ClienteResponse(
-                cliente.getId(),
-                cliente.getNome(),
-                cliente.getCpf(),
-                cliente.getEmail(),
-                cliente.getTelefone(),
-                cliente.getEndereco(),
-                cliente.getPlano().getId(), // adiciona info do plano
-                cliente.getPlano().getNome() // opcional, se quiser mostrar o nome
-        );
+        return new ClienteResponse(cliente.getId(), cliente.getNome(), cliente.getCpf(), cliente.getEmail(),
+                cliente.getTelefone(), cliente.getEndereco());
     }
 }

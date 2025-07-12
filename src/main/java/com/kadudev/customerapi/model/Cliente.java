@@ -1,24 +1,18 @@
 package com.kadudev.customerapi.model;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-@Builder
 @Entity
 @Table(name = "clientes")
+@Data
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "plano")
-@EqualsAndHashCode(of = "id")
 public class Cliente {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,13 +43,8 @@ public class Cliente {
     @Size(max = 255, message = "O endereço não pode ter mais de 255 caracteres")
     private String endereco;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "plano_id", nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "plano_id")
     private Plano plano;
-
-    @Column(nullable = false, updatable = false)
-    @CreationTimestamp
-    private LocalDateTime dataCadastro;
-
-
 }
