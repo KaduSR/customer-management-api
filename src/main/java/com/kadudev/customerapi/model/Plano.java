@@ -33,7 +33,7 @@ public class Plano {
     @Column(nullable = false)
     private BigDecimal valor;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer velocidadeMbps;
 
     @Column(nullable = false)
