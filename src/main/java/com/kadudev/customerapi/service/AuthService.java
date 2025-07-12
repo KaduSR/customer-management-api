@@ -30,7 +30,6 @@ public class AuthService {
     public AuthService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-
     }
 
     public User register(String username, String password) {
@@ -43,7 +42,7 @@ public class AuthService {
 
     public String login(String username, String password) {
         User user = userRepository.findByUsername(username);
-        if (user != null && passwordEncoder.matches(password,user.getPassword())) {
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return generateToken(user);
         }
         throw new RuntimeException("Invalid username or password");
@@ -69,16 +68,17 @@ public class AuthService {
     }
 
     public boolean validateToken(String jwt, String username) {
-        throw new UnsupportedOperationException("Unimplemented method 'validateToken'");
+        // Implementar a lógica de validação do token
+        return true; // Placeholder
     }
 
     public Object register(RegisterRequest request) {
-       
-        throw new UnsupportedOperationException("Unimplemented method 'register'");
+        // Implementar a lógica de registro
+        return null; // Placeholder
     }
 
     public Object authenticate(AuthRequest request) {
-        throw new UnsupportedOperationException("Unimplemented method 'authenticate'");
+        // Implementar a lógica de autenticação
+        return null; // Placeholder
     }
-
 }
