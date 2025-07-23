@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
             Authentication authResult) throws IOException, ServletException {
         String username = authResult.getName();
-        String token = authService.login(username, null); // Password is not needed here as authentication is successful
+        String token = authService.login(username, null); 
         response.addHeader("Authorization", "Bearer " + token);
         response.setContentType("application/json");
         response.getWriter().write(new ObjectMapper().writeValueAsString(new AuthResponse(token)));
