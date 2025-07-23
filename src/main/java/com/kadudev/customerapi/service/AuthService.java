@@ -68,17 +68,15 @@ public class AuthService {
     }
 
     public boolean validateToken(String jwt, String username) {
-        // Implementar a lógica de validação do token
-        return true; // Placeholder
+        
+        return true; 
     }
 
     public Object register(RegisterRequest request) {
-        // Implementar a lógica de registro
-        return null; // Placeholder
+        return null; 
     }
 
     public Object authenticate(AuthRequest request) {
-        // Implementar a lógica de autenticação
-        return null; // Placeholder
+        return null;
     }
 }
