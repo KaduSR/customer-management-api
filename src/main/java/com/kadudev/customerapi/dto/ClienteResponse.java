@@ -6,7 +6,5 @@ public record ClienteResponse(
         String cpf,
         String email,
         String telefone,
-        String endereço
-
-) {
+        String endereco) {
 }

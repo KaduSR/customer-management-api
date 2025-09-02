@@ -14,32 +14,41 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "clientes")
+@Builder
+@Table(name = "enderecos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Cliente {
+public class Endereco {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String nome;
-
-    @Column(nullable = false, unique = true)
-    private String cpf;
-
-    @Column(nullable = false, unique = true)
-    private String email;
+    private String rua;
 
     @Column(nullable = false)
-    private String telefone;
+    private String numero;
 
     @Column(nullable = false)
-    private String endereco;
+    private String bairro;
+
+    @Column(nullable = false)
+    private String cidade;
+
+    @Column(nullable = false)
+    private String estado;
+
+    @Column(nullable = false)
+    private String cep;
 
     @ManyToOne
-    @JoinColumn(name = "plano_id", nullable = true)
-    private Plano plano;
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private Cliente cliente;
+
+    public String getLogradouro() {
+        throw new UnsupportedOperationException("Unimplemented method 'getLogradouro'");
+    }
+
+
 }
